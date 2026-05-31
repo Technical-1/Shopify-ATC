@@ -78,7 +78,9 @@ def render_csv(products: List[Product], base_url: str, quantity: int) -> str:
                     _add_url(base_url, v.id, quantity),
                 ]
             )
-    return buf.getvalue()
+    # Drop csv.writer's trailing line terminator so every renderer returns a
+    # string with no trailing newline (the CLI's print() adds exactly one).
+    return buf.getvalue().rstrip("\r\n")
 
 
 _RENDERERS = {"text": render_text, "json": render_json, "csv": render_csv}

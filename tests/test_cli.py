@@ -1,5 +1,7 @@
+import pytest
+
 import shopify_atc.cli as cli
-from shopify_atc.cli import main
+from shopify_atc.cli import build_parser, main
 from shopify_atc.client import Product, Variant, NetworkError
 
 PRODUCTS = [
@@ -38,5 +40,20 @@ def test_main_maps_error_to_exit_code(monkeypatch, capsys):
 
     monkeypatch.setattr(cli, "fetch_products", boom)
     rc = main(["https://shop.example"])
-    assert rc == 2
+    assert rc == 2  # NetworkError.exit_code
     assert "nope" in capsys.readouterr().err
+
+
+def test_build_parser_defaults():
+    args = build_parser().parse_args(["https://shop.example"])
+    assert args.store_url == "https://shop.example"
+    assert args.limit == 250
+    assert args.quantity == 1
+    assert args.format == "text"
+    assert args.in_stock_only is False
+
+
+def test_main_rejects_non_positive_limit():
+    with pytest.raises(SystemExit) as exc:
+        main(["https://shop.example", "--limit", "0"])
+    assert exc.value.code == 2  # argparse usage error

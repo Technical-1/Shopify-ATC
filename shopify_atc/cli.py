@@ -11,15 +11,22 @@ from .client import fetch_products, normalize_url, filter_in_stock, ShopifyError
 from .formatters import render
 
 
+def _positive_int(value: str) -> int:
+    n = int(value)
+    if n < 1:
+        raise argparse.ArgumentTypeError(f"must be a positive integer, got {value}")
+    return n
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="shopify-atc",
         description="Generate Shopify add-to-cart permalinks from a store's public products.json.",
     )
     parser.add_argument("store_url", help="Shopify store URL, e.g. https://example.com")
-    parser.add_argument("--limit", type=int, default=250, help="Max products to fetch (default: 250)")
+    parser.add_argument("--limit", type=_positive_int, default=250, help="Max products to fetch (default: 250)")
     parser.add_argument("--in-stock-only", action="store_true", help="Only include available variants")
-    parser.add_argument("--quantity", type=int, default=1, help="Quantity placed in cart links (default: 1)")
+    parser.add_argument("--quantity", type=_positive_int, default=1, help="Quantity placed in cart links (default: 1)")
     parser.add_argument("--format", choices=["text", "json", "csv"], default="text", help="Output format")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     return parser

@@ -91,3 +91,29 @@ def test_fetch_products_not_shopify(monkeypatch):
     with pytest.raises(NotShopifyError) as exc:
         fetch_products("https://shop.example")
     assert exc.value.exit_code == 4
+
+
+from shopify_atc.client import filter_in_stock
+
+
+def test_filter_in_stock_keeps_only_available_variants():
+    products = [
+        Product(
+            title="P",
+            handle="p",
+            variants=[
+                Variant(id=1, title="A", available=True, price="1.00"),
+                Variant(id=2, title="B", available=False, price="1.00"),
+            ],
+        )
+    ]
+    assert filter_in_stock(products) == [
+        Product(title="P", handle="p", variants=[Variant(id=1, title="A", available=True, price="1.00")])
+    ]
+
+
+def test_filter_in_stock_drops_products_with_no_available_variants():
+    products = [
+        Product(title="P", handle="p", variants=[Variant(id=2, title="B", available=False)])
+    ]
+    assert filter_in_stock(products) == []

@@ -82,3 +82,13 @@ def fetch_products(url: str, limit: int = 250, *, timeout: int = DEFAULT_TIMEOUT
     except (ValueError, KeyError, TypeError) as exc:
         raise NotShopifyError("Not a Shopify storefront (no products.json)") from exc
     return [_parse_product(p) for p in raw_products]
+
+
+def filter_in_stock(products: List[Product]) -> List[Product]:
+    """Return products keeping only available variants; drop products left empty."""
+    result: List[Product] = []
+    for p in products:
+        available = [v for v in p.variants if v.available]
+        if available:
+            result.append(Product(title=p.title, handle=p.handle, variants=available))
+    return result

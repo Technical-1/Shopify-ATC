@@ -82,7 +82,7 @@ Text output looks like:
 
 ```
 Trino® Cozy Crew - Heathered Onyx
-https://www.allbirds.com/collections/frontpage/products/trino-cozy-crew-heathered-onyx
+https://www.allbirds.com/products/trino-cozy-crew-heathered-onyx
   S (W5-7) — $24.00
   https://www.allbirds.com/cart/add?id=39574630924368&quantity=1
 ```

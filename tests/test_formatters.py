@@ -17,7 +17,7 @@ def test_render_text_full_block():
     out = render(PRODUCTS, "text", BASE, 1)
     assert out == (
         "Cool Shirt\n"
-        "https://shop.example/collections/frontpage/products/cool-shirt\n"
+        "https://shop.example/products/cool-shirt\n"
         "  Small — $20.00\n"
         "  https://shop.example/cart/add?id=111&quantity=1"
     )
@@ -59,6 +59,14 @@ def test_render_csv_neutralizes_formula_injection():
     row = out.strip().splitlines()[1]
     # Dangerous leading chars (=, @) are prefixed with a quote so spreadsheets treat them as text.
     assert row.startswith("'=HYPERLINK(1),'@SUM(A1),")
+
+
+def test_render_csv_tolerates_non_string_price():
+    # A store may return a numeric JSON price; the CSV path must not crash on it.
+    products = [Product(title="P", handle="p", variants=[Variant(id=9, title="S", available=True, price=20.0)])]
+    out = render(products, "csv", BASE, 1)
+    row = out.strip().splitlines()[1]
+    assert row == "P,S,20.0,True,https://shop.example/cart/add?id=9&quantity=1"
 
 
 def test_render_empty_product_list():

@@ -51,13 +51,19 @@ class Product:
     variants: List[Variant] = field(default_factory=list)
 
 
+def _coerce_price(value) -> Optional[str]:
+    """Shopify prices are normally strings, but coerce numbers so Variant.price
+    always honors its Optional[str] type (and downstream formatters can rely on it)."""
+    return None if value is None else str(value)
+
+
 def _parse_product(raw: dict) -> Product:
     variants = [
         Variant(
             id=v["id"],
             title=v.get("title", ""),
             available=bool(v.get("available", False)),
-            price=v.get("price"),
+            price=_coerce_price(v.get("price")),
         )
         for v in raw.get("variants", [])
     ]

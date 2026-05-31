@@ -15,7 +15,7 @@ def _add_url(base_url: str, variant_id: int, quantity: int) -> str:
 
 
 def _product_url(base_url: str, handle: str) -> str:
-    return f"{base_url}/collections/frontpage/products/{handle}"
+    return f"{base_url}/products/{handle}"
 
 
 # Leading characters a spreadsheet may interpret as a formula. Product/variant
@@ -24,8 +24,9 @@ def _product_url(base_url: str, handle: str) -> str:
 _FORMULA_LEADERS = ("=", "+", "-", "@", "\t", "\r")
 
 
-def _safe_cell(value: str) -> str:
-    return "'" + value if value.startswith(_FORMULA_LEADERS) else value
+def _safe_cell(value) -> str:
+    text = "" if value is None else str(value)
+    return "'" + text if text.startswith(_FORMULA_LEADERS) else text
 
 
 def render_text(products: List[Product], base_url: str, quantity: int) -> str:

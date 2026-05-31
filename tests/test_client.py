@@ -45,6 +45,11 @@ def test_parse_product_maps_fields():
     )
 
 
+def test_parse_product_coerces_numeric_price_to_str():
+    raw = {"variants": [{"id": 5, "price": 20.0}]}
+    assert _parse_product(raw).variants[0].price == "20.0"
+
+
 def test_parse_product_uses_defaults_for_missing_optional_fields():
     raw = {"variants": [{"id": 5}]}
     assert _parse_product(raw) == Product(

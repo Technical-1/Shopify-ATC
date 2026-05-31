@@ -18,12 +18,22 @@ def _product_url(base_url: str, handle: str) -> str:
     return f"{base_url}/collections/frontpage/products/{handle}"
 
 
+# Leading characters a spreadsheet may interpret as a formula. Product/variant
+# titles come from arbitrary external stores, so untrusted text cells are
+# prefixed with a quote to neutralize CSV (formula) injection. See OWASP.
+_FORMULA_LEADERS = ("=", "+", "-", "@", "\t", "\r")
+
+
+def _safe_cell(value: str) -> str:
+    return "'" + value if value.startswith(_FORMULA_LEADERS) else value
+
+
 def render_text(products: List[Product], base_url: str, quantity: int) -> str:
     blocks = []
     for p in products:
         lines = [p.title, _product_url(base_url, p.handle)]
         for v in p.variants:
-            price = f" — ${v.price}" if v.price else ""
+            price = f" — ${v.price}" if v.price is not None else ""
             lines.append(f"  {v.title}{price}")
             lines.append(f"  {_add_url(base_url, v.id, quantity)}")
         blocks.append("\n".join(lines))
@@ -58,7 +68,16 @@ def render_csv(products: List[Product], base_url: str, quantity: int) -> str:
     writer.writerow(["product_title", "variant_title", "price", "available", "add_url"])
     for p in products:
         for v in p.variants:
-            writer.writerow([p.title, v.title, v.price or "", v.available, _add_url(base_url, v.id, quantity)])
+            price = v.price if v.price is not None else ""
+            writer.writerow(
+                [
+                    _safe_cell(p.title),
+                    _safe_cell(v.title),
+                    _safe_cell(price),
+                    v.available,
+                    _add_url(base_url, v.id, quantity),
+                ]
+            )
     return buf.getvalue()
 
 

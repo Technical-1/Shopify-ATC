@@ -13,11 +13,21 @@ PRODUCTS = [
 BASE = "https://shop.example"
 
 
-def test_render_text_includes_titles_and_links():
+def test_render_text_full_block():
     out = render(PRODUCTS, "text", BASE, 1)
-    assert "Cool Shirt" in out
-    assert "https://shop.example/collections/frontpage/products/cool-shirt" in out
-    assert "https://shop.example/cart/add?id=111&quantity=1" in out
+    assert out == (
+        "Cool Shirt\n"
+        "https://shop.example/collections/frontpage/products/cool-shirt\n"
+        "  Small — $20.00\n"
+        "  https://shop.example/cart/add?id=111&quantity=1"
+    )
+
+
+def test_render_text_omits_price_suffix_when_none():
+    products = [Product(title="P", handle="p", variants=[Variant(id=9, title="S", available=True, price=None)])]
+    out = render(products, "text", BASE, 1)
+    assert "  S\n" in out
+    assert "—" not in out
 
 
 def test_render_json_emits_add_url_with_quantity():
@@ -32,6 +42,29 @@ def test_render_csv_has_header_and_row():
     lines = out.strip().splitlines()
     assert lines[0] == "product_title,variant_title,price,available,add_url"
     assert lines[1] == "Cool Shirt,Small,20.00,True,https://shop.example/cart/add?id=111&quantity=1"
+
+
+def test_render_csv_blank_price_when_none():
+    products = [Product(title="P", handle="p", variants=[Variant(id=9, title="S", available=False, price=None)])]
+    out = render(products, "csv", BASE, 1)
+    row = out.strip().splitlines()[1]
+    assert row == "P,S,,False,https://shop.example/cart/add?id=9&quantity=1"
+
+
+def test_render_csv_neutralizes_formula_injection():
+    products = [
+        Product(title="=HYPERLINK(1)", handle="h", variants=[Variant(id=9, title="@SUM(A1)", available=True, price="1")])
+    ]
+    out = render(products, "csv", BASE, 1)
+    row = out.strip().splitlines()[1]
+    # Dangerous leading chars (=, @) are prefixed with a quote so spreadsheets treat them as text.
+    assert row.startswith("'=HYPERLINK(1),'@SUM(A1),")
+
+
+def test_render_empty_product_list():
+    assert render([], "text", BASE, 1) == ""
+    assert render([], "json", BASE, 1) == "[]"
+    assert render([], "csv", BASE, 1).strip() == "product_title,variant_title,price,available,add_url"
 
 
 def test_render_rejects_unknown_format():

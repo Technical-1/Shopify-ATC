@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0b0f14;
+    --bg2: #11161d;
+    --green: #95bf47;     /* Shopify brand green */
+    --green-dim: #5e8e3e;
+    --fg: #e6edf3;
+    --muted: #8b949e;
+    --mono: Menlo, Monaco, "DejaVu Sans Mono", "Courier New", monospace;
+    --sans: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  html, body { width: 1200px; height: 630px; }
+  /* Kill ligatures everywhere so "--" and "-" never fuse into dashes */
+  * { font-variant-ligatures: none; -webkit-font-feature-settings: "liga" 0, "calt" 0; font-feature-settings: "liga" 0, "calt" 0; }
+  .card {
+    width: 1200px; height: 630px;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(149,191,71,0.18), transparent 60%),
+      linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    padding: 54px 68px;
+    font-family: var(--sans); color: var(--fg);
+  }
+  .card::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(circle at 30% 40%, black, transparent 75%);
+  }
+  .top { display: flex; align-items: center; gap: 18px; z-index: 1; }
+  .badge {
+    width: 60px; height: 60px; border-radius: 15px;
+    background: linear-gradient(145deg, var(--green), var(--green-dim));
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 30px rgba(149,191,71,0.35);
+  }
+  .badge svg { width: 34px; height: 34px; }
+  .kicker { font-family: var(--mono); color: var(--green); font-size: 21px; letter-spacing: 3px; }
+
+  h1 { font-size: 80px; font-weight: 800; letter-spacing: -2px; margin-top: 24px; z-index: 1; }
+  .tagline { font-size: 31px; color: var(--muted); margin-top: 8px; font-weight: 500; z-index: 1; }
+
+  .term {
+    margin-top: 30px; z-index: 1;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    width: 1064px;
+  }
+  .term-bar { display: flex; gap: 9px; padding: 13px 18px; background: rgba(255,255,255,0.04); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
+  .term-body { font-family: var(--mono); font-size: 23px; line-height: 1.55; padding: 20px 24px 22px; }
+  .prompt .sym { color: var(--green); }
+  .prompt .flag { color: #79c0ff; }
+  .out { color: var(--muted); }
+  .out .link { color: var(--green); }
+
+  .foot { margin-top: auto; z-index: 1; display: flex; gap: 13px; align-items: center; flex-wrap: nowrap; }
+  .pill { font-family: var(--mono); font-size: 18px; color: var(--fg); white-space: nowrap; flex-shrink: 0;
+          border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 8px 15px; background: rgba(255,255,255,0.03); }
+  .url { margin-left: auto; font-family: var(--mono); font-size: 21px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="top">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0b0f14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1.6" fill="#0b0f14"/><circle cx="18" cy="21" r="1.6" fill="#0b0f14"/>
+          <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 6H6"/>
+        </svg>
+      </div>
+      <span class="kicker">PYTHON&nbsp;&nbsp;·&nbsp;&nbsp;CLI</span>
+    </div>
+
+    <h1>Shopify-ATC</h1>
+    <div class="tagline">Add-to-cart permalink generator for any Shopify store</div>
+
+    <div class="term">
+      <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <div class="term-body">
+        <div class="prompt"><span class="sym">$</span> shopify-atc allbirds.com <span class="flag">--in-stock-only</span></div>
+        <div class="out">&nbsp;&nbsp;Trino® Cozy Crew — $24.00</div>
+        <div class="out">&nbsp;&nbsp;<span class="link">allbirds.com/cart/add?id=39574630924368&amp;quantity=1</span></div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span class="pill">text · json · csv</span>
+      <span class="pill">public /products.json</span>
+      <span class="pill">no API key</span>
+      <span class="url">github.com/Technical-1/Shopify-ATC</span>
+    </div>
+  </div>
+</body>
+</html>

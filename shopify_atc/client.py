@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
 import requests
 
-DEFAULT_TIMEOUT = 15
+DEFAULT_TIMEOUT: int = 15
 
 
 class ShopifyError(Exception):
@@ -31,7 +31,7 @@ class NotShopifyError(ShopifyError):
 def normalize_url(url: str) -> str:
     """Trim whitespace/trailing slash and default to https:// if no scheme."""
     url = url.strip().rstrip("/")
-    if not url.startswith(("http://", "https://")):
+    if not url.lower().startswith(("http://", "https://")):
         url = "https://" + url
     return url
 
@@ -79,9 +79,9 @@ def fetch_products(url: str, limit: int = 250, *, timeout: int = DEFAULT_TIMEOUT
         raise HTTPError(f"Store returned HTTP {resp.status_code}")
     try:
         raw_products = resp.json()["products"]
+        return [_parse_product(p) for p in raw_products]
     except (ValueError, KeyError, TypeError) as exc:
         raise NotShopifyError("Not a Shopify storefront (no products.json)") from exc
-    return [_parse_product(p) for p in raw_products]
 
 
 def filter_in_stock(products: List[Product]) -> List[Product]:
@@ -90,5 +90,5 @@ def filter_in_stock(products: List[Product]) -> List[Product]:
     for p in products:
         available = [v for v in p.variants if v.available]
         if available:
-            result.append(Product(title=p.title, handle=p.handle, variants=available))
+            result.append(replace(p, variants=available))
     return result

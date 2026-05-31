@@ -1,4 +1,17 @@
-from shopify_atc.client import normalize_url, Product, Variant
+import pytest
+import requests
+
+from shopify_atc.client import (
+    HTTPError,
+    NetworkError,
+    NotShopifyError,
+    Product,
+    Variant,
+    _parse_product,
+    fetch_products,
+    filter_in_stock,
+    normalize_url,
+)
 
 
 def test_normalize_url_adds_https_scheme():
@@ -13,20 +26,32 @@ def test_normalize_url_preserves_existing_scheme():
     assert normalize_url("http://shop.example") == "http://shop.example"
 
 
-def test_dataclasses_support_equality():
-    a = Product(title="P", handle="p", variants=[Variant(id=1, title="S", available=True, price="9.99")])
-    b = Product(title="P", handle="p", variants=[Variant(id=1, title="S", available=True, price="9.99")])
-    assert a == b
+def test_normalize_url_treats_scheme_case_insensitively():
+    assert normalize_url("HTTP://shop.example") == "HTTP://shop.example"
 
 
-import pytest
-import requests
-from shopify_atc.client import (
-    fetch_products,
-    NetworkError,
-    HTTPError,
-    NotShopifyError,
-)
+def test_parse_product_maps_fields():
+    raw = {
+        "title": "Cool Shirt",
+        "handle": "cool-shirt",
+        "variants": [
+            {"id": 111, "title": "Small", "available": True, "price": "20.00"},
+        ],
+    }
+    assert _parse_product(raw) == Product(
+        title="Cool Shirt",
+        handle="cool-shirt",
+        variants=[Variant(id=111, title="Small", available=True, price="20.00")],
+    )
+
+
+def test_parse_product_uses_defaults_for_missing_optional_fields():
+    raw = {"variants": [{"id": 5}]}
+    assert _parse_product(raw) == Product(
+        title="",
+        handle="",
+        variants=[Variant(id=5, title="", available=False, price=None)],
+    )
 
 
 class FakeResponse:
@@ -93,7 +118,19 @@ def test_fetch_products_not_shopify(monkeypatch):
     assert exc.value.exit_code == 4
 
 
-from shopify_atc.client import filter_in_stock
+def test_fetch_products_null_products_is_not_shopify(monkeypatch):
+    monkeypatch.setattr(requests, "get", lambda *a, **k: FakeResponse(payload={"products": None}))
+    with pytest.raises(NotShopifyError) as exc:
+        fetch_products("https://shop.example")
+    assert exc.value.exit_code == 4
+
+
+def test_fetch_products_variant_missing_id_is_not_shopify(monkeypatch):
+    payload = {"products": [{"title": "X", "handle": "x", "variants": [{"title": "no id"}]}]}
+    monkeypatch.setattr(requests, "get", lambda *a, **k: FakeResponse(payload=payload))
+    with pytest.raises(NotShopifyError) as exc:
+        fetch_products("https://shop.example")
+    assert exc.value.exit_code == 4
 
 
 def test_filter_in_stock_keeps_only_available_variants():

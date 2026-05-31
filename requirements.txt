@@ -1,1 +1,3 @@
+# Runtime dependency — mirrors pyproject.toml [project].dependencies.
+# Kept for users who prefer `pip install -r requirements.txt` over installing the package.
 requests>=2.25

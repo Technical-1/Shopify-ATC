@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shopify-atc"
+description = "Generate Shopify add-to-cart permalinks from a store's public products.json."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "Jacob Kanfer"}]
+dynamic = ["version"]
+dependencies = ["requests>=2.25"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+shopify-atc = "shopify_atc.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "shopify_atc.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["shopify_atc*"]

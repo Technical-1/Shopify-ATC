@@ -48,6 +48,8 @@ pipx install shopify-atc
 
 This installs a `shopify-atc` command.
 
+Runnable examples (CLI and library) live in [`examples/`](examples/).
+
 For local development from a clone:
 
 ```bash
@@ -92,6 +94,43 @@ https://www.allbirds.com/products/trino-cozy-crew-heathered-onyx
 ```
 
 Exit codes: `0` success · `2` bad arguments or unreachable host · `3` HTTP error from the store · `4` not a Shopify storefront.
+
+## Use as a Python library
+
+Everything the CLI does is available programmatically. The key names are
+re-exported from the top-level package:
+
+```python
+import shopify_atc
+
+base = shopify_atc.normalize_url("www.allbirds.com")  # -> https://www.allbirds.com
+
+try:
+    products = shopify_atc.fetch_products(base, limit=5)
+except shopify_atc.ShopifyError as exc:
+    raise SystemExit(str(exc))
+
+products = shopify_atc.filter_in_stock(products)  # optional: drop sold-out variants
+
+# Render to any format the CLI supports:
+print(shopify_atc.render(products, "json", base, quantity=1))
+
+# …or work with the dataclasses directly:
+for product in products:
+    for variant in product.variants:
+        print(variant.title, variant.price, f"{base}/cart/add?id={variant.id}&quantity=1")
+```
+
+### API at a glance
+
+| Name | Description |
+|------|-------------|
+| `fetch_products(url, limit=250, *, timeout=15)` | Fetch + parse a store's `products.json` into `Product` objects. Raises a `ShopifyError` subclass on failure. |
+| `filter_in_stock(products)` | Return products keeping only available variants; drops products left empty. |
+| `normalize_url(url)` | Trim whitespace/trailing slash and default to `https://` if no scheme. |
+| `render(products, fmt, base_url, quantity)` | Render products as `"text"`, `"json"`, or `"csv"`. |
+| `Product`, `Variant` | Dataclasses describing a product and its variants. |
+| `ShopifyError` | Base exception; subclasses `NetworkError` (exit 2), `HTTPError` (exit 3), `NotShopifyError` (exit 4). |
 
 ## Development
 

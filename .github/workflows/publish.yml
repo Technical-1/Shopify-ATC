@@ -38,5 +38,6 @@ jobs:
       - name: Attach distributions to the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
           TAG: ${{ github.event.release.tag_name }}
         run: gh release upload "$TAG" dist/* --clobber

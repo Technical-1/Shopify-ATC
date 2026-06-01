@@ -39,17 +39,21 @@ Shopify-ATC fetches the first, then generates the second for each variant.
 ### Installation
 
 ```bash
-# Install the CLI (pipx keeps it isolated)
-pipx install .
+# From PyPI (recommended)
+pip install shopify-atc
 
-# …or a plain pip install
-pip install .
-
-# …or for development, an editable install with test deps
-pip install -e ".[dev]"
+# …or isolated with pipx
+pipx install shopify-atc
 ```
 
 This installs a `shopify-atc` command.
+
+For local development from a clone:
+
+```bash
+# Editable install with test deps
+pip install -e ".[dev]"
+```
 
 ### Usage
 

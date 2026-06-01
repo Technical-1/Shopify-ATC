@@ -1,6 +1,9 @@
 # Shopify-ATC
 
-![CI](https://github.com/Technical-1/Shopify-ATC/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/Technical-1/Shopify-ATC/actions/workflows/ci.yml/badge.svg)](https://github.com/Technical-1/Shopify-ATC/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/shopify-atc.svg)](https://pypi.org/project/shopify-atc/)
+[![Python versions](https://img.shields.io/pypi/pyversions/shopify-atc.svg)](https://pypi.org/project/shopify-atc/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A command-line tool that turns any Shopify storefront into a list of direct **add-to-cart permalinks**.
 
@@ -46,7 +49,8 @@ pip install shopify-atc
 pipx install shopify-atc
 ```
 
-This installs a `shopify-atc` command.
+This installs a `shopify-atc` command. The package is published on PyPI at
+[pypi.org/project/shopify-atc](https://pypi.org/project/shopify-atc/).
 
 Runnable examples (CLI and library) live in [`examples/`](examples/).
 

@@ -15,8 +15,8 @@
 
 ## Infrastructure
 
-- **Hosting**: N/A — distributed as an installable CLI
-- **CI/CD**: GitHub Actions, test matrix across Python 3.9, 3.10, 3.11, 3.12, 3.13
+- **Distribution**: Published on [PyPI](https://pypi.org/project/shopify-atc/) as `shopify-atc`; installs with `pip`/`pipx`
+- **CI/CD**: GitHub Actions — test matrix across Python 3.9–3.13, plus a release workflow that publishes to PyPI via OIDC trusted publishing (no stored API token)
 - **Monitoring**: none (local tool)
 
 ## Development Tools

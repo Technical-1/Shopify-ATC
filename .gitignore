@@ -11,3 +11,4 @@ venv/
 
 # Local-only release notes (not published)
 RELEASING.md
+.DS_Store

@@ -58,7 +58,16 @@ The three renderers are pure functions (data in, string out), which lets the tes
 - **Choice**: Three focused modules (`client`, `formatters`, `cli`) behind a console entry point.
 - **Why**: Each layer has one responsibility and is independently testable, and the tool installs as a real `shopify-atc` command.
 
+### Token-less publishing via OIDC
+- **Constraint**: Shipping to PyPI on every GitHub release needs upload credentials, and a long-lived API token stored as a CI secret is a standing leak risk.
+- **Options**: Store a PyPI API token in GitHub Actions secrets vs. use PyPI's trusted-publisher flow.
+- **Choice**: OIDC trusted publishing — the release workflow mints a short-lived, repository-scoped token at publish time.
+- **Why**: No secret to rotate or leak; PyPI verifies the workflow's identity directly, so the only thing that can publish `shopify-atc` is this repo's release job.
+
 ## Frequently Asked Questions
+
+### How do I install it?
+`pip install shopify-atc` (or `pipx install shopify-atc` for an isolated install). It's published on PyPI at [pypi.org/project/shopify-atc](https://pypi.org/project/shopify-atc/) and exposes a `shopify-atc` command. Runs on Python 3.9 through 3.13.
 
 ### How does it get a store's products without an API key?
 Every Shopify storefront publishes its catalog at `/products.json`. The tool issues a single GET to `<store>/products.json?limit=250` and parses the response.

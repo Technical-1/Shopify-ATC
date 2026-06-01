@@ -18,6 +18,9 @@ def test_reexports_are_the_same_objects():
     assert shopify_atc.Product is client.Product
     assert shopify_atc.Variant is client.Variant
     assert shopify_atc.ShopifyError is client.ShopifyError
+    assert shopify_atc.NetworkError is client.NetworkError
+    assert shopify_atc.HTTPError is client.HTTPError
+    assert shopify_atc.NotShopifyError is client.NotShopifyError
 
 
 def test_all_lists_expected_public_api():

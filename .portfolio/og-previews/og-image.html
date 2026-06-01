@@ -24,7 +24,7 @@
       linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
     position: relative; overflow: hidden;
     display: flex; flex-direction: column;
-    padding: 54px 68px;
+    padding: 52px 68px;
     font-family: var(--sans); color: var(--fg);
   }
   .card::before {
@@ -45,29 +45,31 @@
   .badge svg { width: 34px; height: 34px; }
   .kicker { font-family: var(--mono); color: var(--green); font-size: 21px; letter-spacing: 3px; }
 
-  h1 { font-size: 80px; font-weight: 800; letter-spacing: -2px; margin-top: 24px; z-index: 1; }
-  .tagline { font-size: 31px; color: var(--muted); margin-top: 8px; font-weight: 500; z-index: 1; }
+  h1 { font-size: 76px; font-weight: 800; letter-spacing: -2px; margin-top: 18px; z-index: 1; }
+  .tagline { font-size: 30px; color: var(--muted); margin-top: 8px; font-weight: 500; z-index: 1; }
 
   .term {
-    margin-top: 30px; z-index: 1;
+    margin-top: 24px; z-index: 1;
     background: rgba(0,0,0,0.45);
     border: 1px solid rgba(255,255,255,0.10);
     border-radius: 14px; overflow: hidden;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     width: 1064px;
   }
-  .term-bar { display: flex; gap: 9px; padding: 13px 18px; background: rgba(255,255,255,0.04); }
+  .term-bar { display: flex; gap: 9px; padding: 12px 18px; background: rgba(255,255,255,0.04); }
   .dot { width: 12px; height: 12px; border-radius: 50%; }
   .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
-  .term-body { font-family: var(--mono); font-size: 23px; line-height: 1.55; padding: 20px 24px 22px; }
+  .term-body { font-family: var(--mono); font-size: 22px; line-height: 1.5; padding: 18px 24px 20px; }
   .prompt .sym { color: var(--green); }
   .prompt .flag { color: #79c0ff; }
+  .prompt .pkg { color: #ffa657; }
   .out { color: var(--muted); }
   .out .link { color: var(--green); }
 
   .foot { margin-top: auto; z-index: 1; display: flex; gap: 13px; align-items: center; flex-wrap: nowrap; }
   .pill { font-family: var(--mono); font-size: 18px; color: var(--fg); white-space: nowrap; flex-shrink: 0;
           border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 8px 15px; background: rgba(255,255,255,0.03); }
+  .pill.accent { border-color: rgba(149,191,71,0.55); color: var(--green); background: rgba(149,191,71,0.08); }
   .url { margin-left: auto; font-family: var(--mono); font-size: 21px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
 </style>
 </head>
@@ -80,7 +82,7 @@
           <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L23 6H6"/>
         </svg>
       </div>
-      <span class="kicker">PYTHON&nbsp;&nbsp;·&nbsp;&nbsp;CLI</span>
+      <span class="kicker">PyPI&nbsp;&nbsp;·&nbsp;&nbsp;CLI&nbsp;+&nbsp;LIBRARY</span>
     </div>
 
     <h1>Shopify-ATC</h1>
@@ -89,6 +91,7 @@
     <div class="term">
       <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
       <div class="term-body">
+        <div class="prompt"><span class="sym">$</span> pip install <span class="pkg">shopify-atc</span></div>
         <div class="prompt"><span class="sym">$</span> shopify-atc allbirds.com <span class="flag">--in-stock-only</span></div>
         <div class="out">&nbsp;&nbsp;Trino® Cozy Crew — $24.00</div>
         <div class="out">&nbsp;&nbsp;<span class="link">allbirds.com/cart/add?id=39574630924368&amp;quantity=1</span></div>
@@ -96,8 +99,9 @@
     </div>
 
     <div class="foot">
+      <span class="pill accent">pip install shopify-atc</span>
+      <span class="pill">CLI + Python API</span>
       <span class="pill">text · json · csv</span>
-      <span class="pill">public /products.json</span>
       <span class="pill">no API key</span>
     </div>
   </div>

@@ -57,3 +57,45 @@ def test_main_rejects_non_positive_limit():
     with pytest.raises(SystemExit) as exc:
         main(["https://shop.example", "--limit", "0"])
     assert exc.value.code == 2  # argparse usage error
+
+
+def _sample():
+    return [Product(title="Tee", handle="tee", variants=[Variant(id=111, title="S", available=True, price="20.00")])]
+
+
+def test_main_quantity_flows_into_cart_links(monkeypatch, capsys):
+    monkeypatch.setattr(cli, "fetch_products", lambda *a, **k: _sample())
+    exit_code = cli.main(["https://example.com", "--quantity", "3"])
+    out = capsys.readouterr().out
+    assert exit_code == 0
+    assert "quantity=3" in out
+
+
+def test_main_format_json_emits_json(monkeypatch, capsys):
+    import json
+
+    monkeypatch.setattr(cli, "fetch_products", lambda *a, **k: _sample())
+    exit_code = cli.main(["https://example.com", "--format", "json"])
+    out = capsys.readouterr().out
+    assert exit_code == 0
+    data = json.loads(out)
+    assert data[0]["handle"] == "tee"
+    assert data[0]["variants"][0]["add_url"].endswith("quantity=1")
+
+
+def test_main_format_csv_emits_header(monkeypatch, capsys):
+    monkeypatch.setattr(cli, "fetch_products", lambda *a, **k: _sample())
+    exit_code = cli.main(["https://example.com", "--format", "csv"])
+    out = capsys.readouterr().out
+    assert exit_code == 0
+    assert out.splitlines()[0] == "product_title,variant_title,price,available,add_url"
+
+
+def test_main_version_exits_zero(capsys):
+    import shopify_atc
+
+    with pytest.raises(SystemExit) as excinfo:
+        cli.main(["--version"])
+    assert excinfo.value.code == 0
+    out = capsys.readouterr().out
+    assert shopify_atc.__version__ in out

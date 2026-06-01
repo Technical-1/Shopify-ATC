@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,13 +7,34 @@ name = "shopify-atc"
 description = "Generate Shopify add-to-cart permalinks from a store's public products.json."
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "MIT"}
-authors = [{name = "Jacob Kanfer"}]
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Jacob Kanfer", email = "jacobrk2001@gmail.com"}]
+keywords = ["shopify", "cart", "permalink", "ecommerce", "cli", "scraper"]
 dynamic = ["version"]
 dependencies = ["requests>=2.25"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet",
+]
 
 [project.optional-dependencies]
-dev = ["pytest>=7"]
+dev = ["pytest>=7", "build>=1", "twine>=5"]
+
+[project.urls]
+Homepage = "https://github.com/Technical-1/Shopify-ATC"
+Repository = "https://github.com/Technical-1/Shopify-ATC"
+Issues = "https://github.com/Technical-1/Shopify-ATC/issues"
+Documentation = "https://github.com/Technical-1/Shopify-ATC#readme"
 
 [project.scripts]
 shopify-atc = "shopify_atc.cli:main"
